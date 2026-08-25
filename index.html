@@ -21,69 +21,80 @@ body {
   padding: 2px;
 }
 
-/* THE BUTTON */
+/* CARD */
 .card {
   width: 100%;
-  max-width: 420px;
-  height: 40px;
+  max-width: 430px;
+  height: 58px;
 
-  padding: 0 14px;
+  padding: 9px 14px;
 
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 14px;
 
   background: #ffffff;
-
   border: 1px solid #2f2f2f;
-  border-radius: 999px;
-
-  box-shadow: none;
+  border-radius: 21px;
 }
 
-/* TITLE */
+/* LEFT SIDE */
+.info {
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
 .title {
-  white-space: nowrap;
   font-size: 13px;
-  font-weight: 600;
-}
-
-/* WEEK */
-.week {
+  font-weight: 650;
+  line-height: 16px;
   white-space: nowrap;
-  font-size: 11px;
-  color: #777777;
 }
 
-/* BAR */
+.week {
+  margin-top: 1px;
+  font-size: 10px;
+  color: #777777;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+/* RIGHT SIDE */
+.progress-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
 .bar {
   flex: 1;
-  min-width: 60px;
+  min-width: 70px;
   height: 6px;
 
   background: #e8e8e8;
-
   border-radius: 999px;
   overflow: hidden;
 }
 
-/* FILLED PART */
 .fill {
   height: 100%;
   width: 0%;
 
   background: #2f2f2f;
-
   border-radius: 999px;
 
-  transition: width .4s ease;
+  transition: width 0.4s ease;
 }
 
-/* PERCENT */
 .percent {
-  white-space: nowrap;
-  font-size: 12px;
-  font-weight: 600;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 650;
+  min-width: 25px;
+  text-align: right;
 }
 </style>
 </head>
@@ -92,100 +103,60 @@ body {
 
 <div class="card">
 
-  <div class="title">
-    📚 School Year
+  <div class="info">
+    <div class="title">📚 School Year</div>
+
+    <div class="week" id="week">
+      Week 1 / 42
+    </div>
   </div>
 
-  <div class="week" id="week">
-    Week 1 / 42
-  </div>
+  <div class="progress-area">
 
-  <div class="bar">
-    <div class="fill" id="fill"></div>
-  </div>
+    <div class="bar">
+      <div class="fill" id="fill"></div>
+    </div>
 
-  <div class="percent" id="percent">
-    0%
+    <div class="percent" id="percent">
+      0%
+    </div>
+
   </div>
 
 </div>
 
 <script>
 
-const start =
-  new Date("2026-08-10T00:00:00");
+const start = new Date("2026-08-10T00:00:00");
+const end = new Date("2027-05-27T23:59:59");
+const today = new Date();
 
-const end =
-  new Date("2027-05-27T23:59:59");
+const total = end - start;
+const elapsed = today - start;
 
-const today =
-  new Date();
+let progress = elapsed / total;
 
-const total =
-  end - start;
+progress = Math.min(1, Math.max(0, progress));
 
-const elapsed =
-  today - start;
+const percent = Math.round(progress * 100);
 
-let progress =
-  elapsed / total;
+const totalDays = Math.ceil(total / 86400000);
+const daysPassed = Math.max(0, Math.floor(elapsed / 86400000));
 
-progress =
-  Math.min(
-    1,
-    Math.max(
-      0,
-      progress
-    )
-  );
+const totalWeeks = Math.ceil(totalDays / 7);
 
-const percent =
-  Math.round(
-    progress * 100
-  );
+const week = Math.min(
+  totalWeeks,
+  Math.floor(daysPassed / 7) + 1
+);
 
-const totalDays =
-  Math.ceil(
-    total / 86400000
-  );
+document.getElementById("week").textContent =
+  "Week " + week + " / " + totalWeeks;
 
-const daysPassed =
-  Math.max(
-    0,
-    Math.floor(
-      elapsed / 86400000
-    )
-  );
-
-const totalWeeks =
-  Math.ceil(
-    totalDays / 7
-  );
-
-const week =
-  Math.min(
-    totalWeeks,
-    Math.floor(
-      daysPassed / 7
-    ) + 1
-  );
-
-document
-  .getElementById("week")
-  .textContent =
-  "Week " +
-  week +
-  " / " +
-  totalWeeks;
-
-document
-  .getElementById("percent")
-  .textContent =
+document.getElementById("percent").textContent =
   percent + "%";
 
-document
-  .getElementById("fill")
-  .style.width =
+document.getElementById("fill").style.width =
   percent + "%";
 
 </script>
